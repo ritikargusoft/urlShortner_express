@@ -1,33 +1,18 @@
-import crypto from "crypto"
+import crypto from "crypto";
 import { loadLinks, saveLinks } from "../models/shortener.model.js";
-import { readFile } from "fs/promises";
-import path from "path";
 
-export const getURLShortener =
-async (req, res) => {
+export const getShortenerPage = async (req, res) => {
   try {
-    const file = await readFile(path.join("views", "index.html"));
+    // const file = await readFile(path.join("views", "index.html"));
     const links = await loadLinks();
-
-    const content = file.toString().replaceAll(
-      "{{ shortened_urls }}",
-      Object.entries(links)
-        .map(
-          ([shortCode, url]) =>
-            `<li><a href="/${shortCode}" target="_blank">${req.host}/${shortCode}</a> - ${url}</li>`
-        )
-        .join("")
-    );
-    return res.send(content);
+    return res.render("index", { links, host: req.host });
   } catch (error) {
     console.error(error);
     return res.status(500).send("Internal server error");
   }
-}
+};
 
-
-export const postURLShortener= 
-async (req, res) => {
+export const postURLShortener = async (req, res) => {
   try {
     const { url, shortCode } = req.body;
     const finalShortCode = shortCode || crypto.randomBytes(4).toString("hex");
@@ -48,9 +33,9 @@ async (req, res) => {
     console.error(error);
     return res.status(500).send("Internal server error");
   }
-}
+};
 
-export const redirectToShortLink=async (req, res) => {
+export const redirectToShortLink = async (req, res) => {
   try {
     const { shortCode } = req.params;
     const links = await loadLinks();
@@ -62,4 +47,4 @@ export const redirectToShortLink=async (req, res) => {
     console.error(err);
     return res.status(500).send("Internal server error");
   }
-}
+};
