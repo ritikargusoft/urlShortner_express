@@ -25,15 +25,24 @@ import { dbClient } from "../config/db-client.js";
 // import { env } from "../config/env.js";
 
 // const db = dbClient.db(env.MONGODB_DATABASE_NAME);
-const db = dbClient.db("urlShortener");
-const shortenerCollection = db.collection("shorteners")
+// const db = dbClient.db("urlShortener");
+// const shortenerCollection = db.collection("shorteners")
+
+import {db} from "../config/db-client.js"
 
 export const loadLinks = async ()=>{
-  return shortenerCollection.find().toArray()
+  // return shortenerCollection.find().toArray()
+ const rows =await db.execute(`select * from short_links`)
+ return rows;
 }
 
 export const saveLinks = async (link) =>{
-  return shortenerCollection.insertOne(link)
+  // return shortenerCollection.insertOne(link)
+  const [result]= await db.execute(
+    "insert into short_links(short_code,url) values(?,?)",
+  ["",""]
+);
+return result;
 }
 
 export const  getLinkByShortCode = async (shortcode) =>{
