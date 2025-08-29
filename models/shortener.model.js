@@ -21,7 +21,7 @@
 //   await writeFile(DATA_FILE, JSON.stringify(links));
 // };
 
-import { dbClient } from "../config/db-client.js";
+// import { dbClient } from "../config/db-client.js";
 // import { env } from "../config/env.js";
 
 // const db = dbClient.db(env.MONGODB_DATABASE_NAME);
@@ -36,15 +36,26 @@ export const loadLinks = async ()=>{
  return rows;
 }
 
-export const saveLinks = async (link) =>{
+export const saveLinks = async ({url, shortCode}) =>{
   // return shortenerCollection.insertOne(link)
   const [result]= await db.execute(
     "insert into short_links(short_code,url) values(?,?)",
-  ["",""]
+  [shortCode, url]
 );
 return result;
 }
 
 export const  getLinkByShortCode = async (shortcode) =>{
-  return await shortenerCollection.findOne({ shortCode: shortcode})
+  // return await shortenerCollection.findOne({ shortCode: shortcode})
+
+  const [rows]= await db.execute
+  (`select * from short_links where short_code = ?`,
+    [shortcode]
+  );
+  console.log(rows)
+  if(rows.length>0){
+    return rows[0];
+  } else{
+    return null;
+  }
 }

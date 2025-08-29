@@ -18,7 +18,7 @@ console.log("my sql connected")
 
 //STEP 3. Create a table
 await db.execute(`
-  CREATE TABLE url_shortener_mysql (
+  CREATE TABLE short_links (
   id INT AUTO_INCREMENT PRIMARY KEY,
   short_code VARCHAR(20) NOT NULL UNIQUE,
   url VARCHAR(255) NOT NULL)`)
